@@ -9,8 +9,6 @@ function t411 (url) {
         this.token='';
         this.fetch = function(path,headers,method,postData,callback){
                 var options = {
-                        //host: "dumbledore.actimage.int",
-                        //path: "http://" + this.url + path,
                         host: this.url,
                         path: path,
                         port: 80,
@@ -125,25 +123,28 @@ t411.prototype.searchTVShow = function(show,options,callback) {
         //console.log(uri+term);
 
         this.fetch(uri + term, headers, "GET", '', function(data){
-                var resultObject = JSON.parse(data);
-                //console.log(resultObject);
-                if(resultObject.total == '1'){
-                        callback(resultObject.torrents[0]);
-                }
-                else{
-                        var temp = '';
-                        for( var i = 0; i<resultObject.torrents.length; ++i){
-                                if( resultObject.torrents[i].name.indexOf('x264') > -1 ){
-                                        temp = resultObject.torrents[i];
-                                }
-                        }
-                        if(temp !== ''){
-                                callback(temp);
-                        }
-                        else{
-                                callback(resultObject.torrents[0]);
-                        }
-                }
+            var resultObject = JSON.parse(data);
+            //console.log(resultObject);
+            if(resultObject.total == '1'){
+                    callback(resultObject.torrents[0]);
+            }
+            else if( resultObject.torrents ) {
+                    var temp = '';
+                    for( var i = 0; i < resultObject.torrents.length; ++i){
+                            if( resultObject.torrents[i].name.indexOf('x264') > -1 ){
+                                    temp = resultObject.torrents[i];
+                            }
+                    }
+                    if(temp !== ''){
+                            callback(temp);
+                    }
+                    else{
+                            callback(resultObject.torrents[0]);
+                    }
+            }
+            else{
+                callback(false);
+            }
         });
 };
 
