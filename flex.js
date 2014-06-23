@@ -120,10 +120,10 @@ var flex = {
 
         addToDeluge: function(torrent, filename){
                 var deluge_add = require('./Class/deluge-web.js');
-                var deluge_url = 'http://ks391894.kimsufi.com:8112/json';
+                var deluge_url = config.deluge.url;
                 var magnet_url = path.resolve(filename);
-                var password = 'cpy4nxmw';
-                var download_location = showPath + torrent.show + '/S' + torrent.season + '/';
+                var password = config.deluge.password;
+                var download_location = config.showPath + torrent.show + '/S' + torrent.season + '/';
 
                 deluge_add(deluge_url, password, magnet_url, download_location, function(err, result){
                         if(err){
@@ -194,7 +194,6 @@ var flex = {
 
 };
 
-console.log(config);
 var t411 = new t411(config.t411.url);
 var t411User = {
     username: config.t411.user,
