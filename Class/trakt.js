@@ -9,8 +9,6 @@ function trakt (url,username) {
 
         this.fetch = function(path,headers,method,postData,callback){
                 var options = {
-                        //host: "dumbledore.actimage.int",
-                        //path: "http://" + this.url + path,
                         host: this.url,
                         path: path,
                         port: 80,
@@ -58,23 +56,18 @@ trakt.prototype.getUserMovieCollection = function(callback){
 };
 
 trakt.prototype.collected = function(name, season, number, callback){
-        var headers = {
-                'Content-Type': 'application/x-www-form-urlencoded'
-        };
-        var url = '/user/progress/collected.json/' + this.apiKey + '/' + this.username + '/' + name;
-        this.fetch(url, headers, "GET", '', function(result){
-                if(result){
-                        var resultObject = JSON.parse(result);
-                        if(resultObject[0]){
-                            if(resultObject[0].seasons[season - 1] > 0){
-                                callback(resultObject[0].seasons[season - 1].episodes[number], '');    
-                            }
-                        }
-                        else{
-                                callback('','Not found');
-                        }
-                }
-        });
+    var headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+    };
+    var url = '/user/progress/collected.json/' + this.apiKey + '/' + this.username + '/' + name;
+    this.fetch(url, headers, "GET", '', function(result){
+        if(result){
+            var resultObject = JSON.parse(result);
+            if(resultObject[0]){
+                callback(resultObject[0].seasons[season - 1].episodes[number]);    
+            }
+        }
+    });
 };
 
 trakt.prototype.getUserMovieWatchlist = function(callback){

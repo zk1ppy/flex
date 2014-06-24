@@ -62,7 +62,12 @@ var flex = {
         checkIsCollected: function() {
                 if (this.showList.length) {
                         var episode = this.showList.pop();
-                        trakt.collected(episode.imdbID, episode.season, episode.number, this.isShowDownloaded.bind(this, episode));
+                        if(episode.season > 0){
+                            trakt.collected(episode.imdbID, episode.season, episode.number, this.isShowDownloaded.bind(this, episode));
+                        }
+                        else{
+                            this.checkIsCollected();
+                        }
                 }
                 else{
                         this.checkShowOnTracker();
@@ -196,12 +201,30 @@ var flex = {
 
 var t411 = new t411(config.t411.url);
 var t411User = {
-    username: config.t411.user,
+    username: config.t411.username,
     password: config.t411.password,
+};
+
+function go(connected){
+    if(connected){
+        var trakt = new trakt(config.trakt.url,config.trakt.username);
+        //flex.getMyMovieCollectionCall();
+        flex.fetchShowList();
+    }
+    else{
+        console.log('Connexion error on t411...');
+    }
 }
+
 t411.login(t411User,function(){});
-var trakt = new trakt(config.trakt.url,config.trakt.username);
+if( t411.logged){
+    var trakt = new trakt(config.trakt.url,config.trakt.username);
+    //flex.getMyMovieCollectionCall();
+    flex.fetchShowList();
+}
+else{
+    console.log("Erreur de connexion");
+}
 
-//flex.getMyMovieCollectionCall();
 
-flex.fetchShowList();
+
