@@ -30,7 +30,9 @@ function trakt (url,username) {
                                 console.log('problem with request: ' + e.message);
                         });
                 });
-                if(method="POST"){request.write(postData)};
+                if(method == "POST"){
+                    request.write(postData);
+                }
                 request.end();
         };
 }
@@ -64,16 +66,16 @@ trakt.prototype.collected = function(name, season, number, callback){
                 if(result){
                         var resultObject = JSON.parse(result);
                         if(resultObject[0]){
-                                //console.log(resultObject[0]);
-                                //g▒rer les ▒pisodes sp▒ciaux (hors saison)
-                                callback(resultObject[0].seasons[season - 1].episodes[number], '');
+                            if(resultObject[0].seasons[season - 1] > 0){
+                                callback(resultObject[0].seasons[season - 1].episodes[number], '');    
+                            }
                         }
                         else{
                                 callback('','Not found');
                         }
                 }
         });
-}
+};
 
 trakt.prototype.getUserMovieWatchlist = function(callback){
         var headers = {
@@ -89,4 +91,4 @@ trakt.prototype.getUserMovieWatchlist = function(callback){
                                 }
                         }
                 });
-}
+};
