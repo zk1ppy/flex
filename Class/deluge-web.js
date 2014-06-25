@@ -9,7 +9,7 @@ module.exports = function(deluge_url, password, magnet_url, download_location, c
   var jar = request.jar(),
       d = function(body, callback) {
         deluge(deluge_url, body, jar, callback);
-      }
+      };
 
   d(getAuthBody(password), function(err, resp) {
     if(err) return cb(err);
@@ -21,14 +21,14 @@ module.exports = function(deluge_url, password, magnet_url, download_location, c
       d(getConnectBody(host), function(err, resp){
         if(err) return cb(err);
 
-        d(getAddBody(magnet_url, download_location), cb)
-      })
-    })
+        d(getAddBody(magnet_url, download_location), cb);
+      });
+    });
   });
-}
+};
 
 function getAuthBody(password) {
-  return {method:"auth.login", params: [password], "id": 0}
+  return {method:"auth.login", params: [password], "id": 0};
 }
 
 function parseHostBody(resp) {
@@ -36,7 +36,13 @@ function parseHostBody(resp) {
 
   // return the first host entry. resp looks like
   //{"id": 1, "result": [["f16e04a60638b758c247ce76371ed464aeb4adf1", "127.0.0.1", 58846, "Offline"]], "error": null}
-  return resp.result[0][0];
+  if(resp.result.length){
+    return resp.result[0][0]; 
+  }
+  else{
+      return false;
+  }
+  
 }
 
 function getConnectBody(host){
@@ -62,12 +68,11 @@ function getAddBody(magnet_url, download_location) {
             prioritize_first_last_pieces:false
           }
     }]],
-  }
+  };
 }
 
 function deluge(url, body, jar, callback) {
   var req = request({
-    //proxy: "http://dumbledore.actimage.int",
     url: url,
     method:'POST',
     headers: {'Content-type':'application/json'},
@@ -91,7 +96,7 @@ function deluge(url, body, jar, callback) {
         } else if (encoding == 'deflate') {
           zlib.inflate(buffer, function(err, decoded) {
             callback(err, decoded && decoded.toString());
-          })
+          });
         } else {
           callback(null, buffer.toString());
         }
